@@ -7,6 +7,28 @@ app.use(express.json())
 
 
 
-app.listen(8080, () => {
-    console.log("Server is running on port 8080");
-})
+// Create a MySQL connection pool
+const pool = mysql.createPool({
+    connectionLimit: 10,
+    host: 'localhost',
+    user: 'root',
+    password: 'password',
+    database: 'my_database'
+  });
+  
+  // Middleware
+  app.use(express.json());
+  
+  // Routes
+  app.post('/register', (req, res) => {
+    // Register logic
+  });
+  
+  app.post('/login', (req, res) => {
+    // Login logic
+  });
+  
+  // Start the server
+  app.listen(3000, () => {
+    console.log('Server started on port 3000');
+  });
