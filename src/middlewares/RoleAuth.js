@@ -1,5 +1,4 @@
-const User = require('../model/User');
-
+import User from '../model/User.js';
 
 const RoleAuth = (req,res,next) => {
     const user = res.locals.currentUser;
@@ -23,13 +22,25 @@ const AdminAuth = (req,res,next) => {
     const user = res.locals.currentUser;
     const role = user.role;
 
-    if (role !== "Admin") {
-        res.status(401).json({
+    if (role !== "ADMIN") {
+        res.status(403).json({
             success: false, 
-            message: "No authentication"
+            message: "Access denied"
         })
     } else {
         next();
+    }
+}
+
+const StaffAuth = (req, res, next) => {
+    const user = res.locals.currentUser;
+    const role = user.role;
+
+    if (role !== "STAFF") {
+        res.status(403).json({
+            success: false,
+            message: "Access denied"
+        })
     }
 }
 

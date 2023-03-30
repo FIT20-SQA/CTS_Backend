@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
-async   function  connect() {
+export default async function connect() {
     try {
         await mongoose.connect('mongodb://localhost:27017/CinemaSystem');
         console.log("Connected");
@@ -9,4 +9,4 @@ async   function  connect() {
     }
 }
 
-module.exports = { connect };
+

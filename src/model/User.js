@@ -1,20 +1,6 @@
-const mongoose =  require('mongoose');
-let validate = require('mongoose-validator');
-const {isEmail } = require('validator');
-const bcrypt = require('bcrypt');
-const mongooseDelete = require("mongoose-delete");
-const ROLE = require('../config/Role');
 
-
-// let namevalidate = [
-//     validate({
-//         validator: 'isLength',
-//         arguments: [3, 50],
-//         message: 'Name should be between 5 and 255 characters'
-//     })
-// ]
-
-
+import mongoose from 'mongoose';
+import bcrypt from 'bcrypt';
 
 
 const Schema = mongoose.Schema;
@@ -36,14 +22,6 @@ const User = new Schema({
         minLength: 2 
     },
 
-    username: {
-        type: String, 
-        require: [true,"Enter username"],
-        maxLength: 255,
-        unique : true,
-        minLength: [5,'min 5 character']
-    },
-
     password: {
         type: String, 
         require: [true,"Enter password"],
@@ -56,24 +34,33 @@ const User = new Schema({
         type: String,
         require: true,
         // ref: ROLE,
-        default: "Staff",
-        enum: ['Admin', "Staff"]
+        default: "STAFF",
+        enum: ['ADMIN', "STAFF"]
     }
     
-},
-{timestamps : true});
+});
 
 
 User.pre('save', async function(next) { 
     // console.log('A : ' + this);
-    const salt = await  bcrypt.genSalt();
-    this.password = await bcrypt.hash(this.password, salt);
+    const user = this;
+
+    const existedUser = await user.constructor.findOne({ email: user.email });
+    if (existedUser) {
+        throw new Error("Email already existed");
+    }
+    
+
+    const salt = await bcrypt.genSalt();
+    thiusers.password = await bcrypt.hash(user.password, salt);
     next();
 });
-User.statics.login = async function(username,password) { 
-    const user = await this.findOne({username : username});
+
+User.statics.login = async function(email,password) { 
+
+    const user = await this.findOne({email : email});
     if (user) { 
-       const auth = await bcrypt.compare(password, user.password);
+        const auth = await bcrypt.compare(password, user.password);
         if (auth) { 
             return user;
         } else {
@@ -84,6 +71,4 @@ User.statics.login = async function(username,password) {
 }
 
 
-
-
-module.exports = mongoose.model("User",User);
+export default mongoose.model('User', User);
