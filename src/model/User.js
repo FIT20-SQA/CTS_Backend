@@ -42,22 +42,23 @@ const User = new Schema({
 
 
 User.pre('save', async function(next) { 
-    // console.log('A : ' + this);
-    const user = this;
+    const user = this
+    try {
+        const existedUser = await user.constructor.findOne({ email: user.email });
+        if (existedUser) {
+            throw new Error("Email already existed");
+        }
 
-    const existedUser = await user.constructor.findOne({ email: user.email });
-    if (existedUser) {
-        throw new Error("Email already existed");
+        const salt = await bcrypt.genSalt();
+        user.password = await bcrypt.hash(user.password, salt);
+        next();
+    } catch (error) {
+        next(error);
     }
-    
-
-    const salt = await bcrypt.genSalt();
-    thiusers.password = await bcrypt.hash(user.password, salt);
-    next();
 });
 
 User.statics.login = async function(email,password) { 
-
+    
     const user = await this.findOne({email : email});
     if (user) { 
         const auth = await bcrypt.compare(password, user.password);

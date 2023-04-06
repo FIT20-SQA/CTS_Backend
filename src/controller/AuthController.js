@@ -11,9 +11,9 @@ const maxAge = 2 * 24 * 60 * 60;
 class AuthController {
     async register(req, res, next) {
         let data = req.body;
-        const user =  User.create(data);
         try {
-            await user.save()
+
+            const user = await User.create(data);
             const payload = {
                 id: user._id,
                 role: user.role,
@@ -34,24 +34,28 @@ class AuthController {
 
             res.status(404).json(body);
             next();
-        }      
+        }
     }
 
     async login(req, res) {
         // res.status(201).json(34354);
         const { username, password } = req.body;
-
+        console.log(username, password);
         try {
             res.clearCookie("token");
             const user = await User.login(username, password);
-            const token = createToken(user._id, user.role);
+            const payload = {
+                id: user._id,
+                role: user.role
+            }
+            const token = createToken(payload);
             res.cookie("token", token, { httpOnly: true, maxAge: maxAge * 1000 });
 
             const body = {
                 success: true,
                 message: "login success",
-                role: user.role,
                 token: token,
+                role: user.role,
             }
 
             res.status(200).json(body);
@@ -84,7 +88,7 @@ class AuthController {
 
         const token = res.cookies;
         res.locals.currentUser = null;
-    
+
         console.log(token);
         res.status(200).json({
             message: "Clear successful",
