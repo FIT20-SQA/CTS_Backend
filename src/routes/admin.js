@@ -4,15 +4,27 @@ const router = express.Router();
 import AdminController from '../controller/AdminController.js'
 import AdminAuthorization from '../middlewares/AdminAuthorization.js'
 
-router.post('/movies',AdminAuthorization, AdminController.createMovie)
+router.get('/theater-rooms', AdminAuthorization, AdminController.getTheaterRooms)
 router.post('/theater-rooms', AdminAuthorization, AdminController.createTheaterRoom)
-router.post('/foods', AdminAuthorization, AdminController.createFood)
-router.post('/drinks', AdminAuthorization, AdminController.createDrink)
-router.post('/staffs', AdminAuthorization, AdminController.createStaff)
-router.put('/foods/:id', AdminAuthorization, AdminController.updateFood)
-router.put('/drinks/:id', AdminAuthorization, AdminController.updateDrink)
-router.put('/movies/:id', AdminAuthorization, AdminController.updateMovie)
 router.put('/theater-rooms/:id', AdminAuthorization, AdminController.updateTheaterRoom)
+router.delete('/theater-rooms/:id', AdminAuthorization, AdminController.deleteTheaterRoom)
+
+router.post('/movies', AdminAuthorization, AdminController.createMovie)
+router.put('/movies/:id', AdminAuthorization, AdminController.updateMovie)
+router.delete('/movies/:id', AdminAuthorization, AdminController.deleteMovie)
+
+router.post('/foods', AdminAuthorization, AdminController.createFood)
+router.put('/foods/:id', AdminAuthorization, AdminController.updateFood)
+router.delete('/foods/:id', AdminAuthorization, AdminController.deleteFood)
+
+router.post('/drinks', AdminAuthorization, AdminController.createDrink)
+router.put('/drinks/:id', AdminAuthorization, AdminController.updateDrink)
+router.delete('/drinks/:id', AdminAuthorization, AdminController.deleteDrink)
+
+router.post('/staffs', AdminAuthorization, AdminController.createStaff)
+
+
+//TODO: 
 
 // //TODO: schedule showtime for a movie
 // router.post('/showtimes', AdminAuthorization, AdminController.createShowtime)

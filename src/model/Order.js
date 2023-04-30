@@ -11,7 +11,7 @@ const orderSchema = new Schema({
         quantity: {
             type: Number,
             required: true,
-            default: 1
+            default: 0
         },
     },
     drink: {
@@ -22,7 +22,7 @@ const orderSchema = new Schema({
         quantity: {
             type: Number,
             required: true,
-            default: 1
+            default: 0
         },
     },
     ticket: {
@@ -33,17 +33,16 @@ const orderSchema = new Schema({
         type: Number,
         required: true,
     },
-}, {
-    toJSON: { virtuals: true },
-    toObject: { virtuals: true },
 })
 
-orderSchema.virtual('totalPrice')
-.get(function () {
+Order.pre('save', async function (next) {
     const foodPrice = (this.food.item.price || 0) * this.food.quantity;
     const drinkPrice = (this.drink.item.price || 0) * this.drink.quantity;
-    const ticketPrice = this.ticket.price;
-    return foodPrice + drinkPrice + ticketPrice;
+    const ticket = await this.populate('ticket').execPopulate();
+    const ticketPrice = ticket.ticket.price || 0;
+    this.totalPrice = foodPrice + drinkPrice + ticketPrice;
+    next();
 })
+
 
 export default mongoose.model('Order', orderSchema);

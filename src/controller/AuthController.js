@@ -3,6 +3,8 @@ import cookieParser from "cookie-parser";
 import User from '../model/User.js';
 
 const createToken = (payload) => {
+    console.log('payload');
+    console.log(payload);
     return jwt.sign(payload, "secret_key", { expiresIn: 5000 });
 };
 

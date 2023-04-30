@@ -1,9 +1,9 @@
-import jwtVerifier from '../utils/JwtVerifier.js';
+import { parseToken } from '../utils/JwtVerifier.js';
 
 
-const StaffAuthorization = (req,res,next) => {
+const StaffAuthorization = async (req,res,next) => {
     const token = req.cookies.token
-    const { id, role } = jwtVerifier.parse(token);
+    const {id, role} = parseToken(token);
 
     if (role === "STAFF") {
         next();

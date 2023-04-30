@@ -1,18 +1,27 @@
 import jwt from 'jsonwebtoken';
 
-const parse = (jwtToken) => {
-    if (token) {
-        jwt.verify(token, 'secret_key', async(err,token) => {
-            if (!err) {
-                return {
-                    id: token.id,
-                    role: token.role
-                }
-            }
-        })
+const parseToken = (jwtToken) => {
 
+    if (!jwtToken) {
+        return {
+            id: null,
+            role: null
+        }
     }
-    return null;
+
+    const token =  jwt.verify(jwtToken, 'secret_key')
+    if (!token) {
+        return {
+            id: null,
+            role: null
+        }
+    }
+
+    return {
+        id: token.id,
+        role: token.role
+    }
+
 }
 
-export default { parse };
+export { parseToken };

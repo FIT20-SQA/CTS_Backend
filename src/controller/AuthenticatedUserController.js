@@ -1,13 +1,13 @@
 import Movie from '../model/Movie.js';
 import Food from '../model/Food.js';
-import Drinks from '../model/Drink.js';
+import Drink from '../model/Drink.js';
 
 
 class AuthenticatedUserController {
     // get the movies
     async getMovies(req, res) {
         try {
-            const movies = await Movie.findAll();
+            const movies = await Movie.find()
 
             const body = {
                 success: true,
@@ -30,7 +30,7 @@ class AuthenticatedUserController {
     // get the foods
     async getFoods(req, res) {
         try {
-            const foods = await Food.findAll();
+            const foods = await Food.find();
 
             const body = {
                 success: true,
@@ -54,7 +54,7 @@ class AuthenticatedUserController {
     async getDrinks(req, res) {
         try {
 
-            const drinks = Drink.findAll()
+            const drinks = await Drink.find()
 
             const body = {
                 success: true,

@@ -32,12 +32,29 @@ class AdminController {
             res.status(400).json(body);
         }
     }
+    async getTheaterRooms(req, res) {
+        try {
+            const theaterRooms = await TheaterRoom.find();
+            const body = {
+                success: true,
+                message: "Get theater rooms successfully",
+                data: theaterRooms
+            }
+            res.status(200).json(body);
+        } catch (err) {
+            const body = {
+                success: false,
+                message: err.message
+            }
+            res.status(400).json(body);
+        }
+    }
 
     async updateTheaterRoom(req, res) {
         const body = req.body;
         const id = req.params.id;
         
-        const theaterRoom = TheaterRoom.findById(id);
+        const theaterRoom = await TheaterRoom.findById(id);
 
         if (!theaterRoom) {
             const body = {
@@ -72,8 +89,30 @@ class AdminController {
         
     }
 
+    async deleteTheaterRoom(req, res) {
+        const id = req.params.id;
+
+        try {
+            await TheaterRoom.findByIdAndDelete(id);
+
+            const body = {
+                success: true,
+                message: "Delete theater room successfully"
+            }
+
+            res.status(200).json(body);
+        } catch (err) {
+            const body = {
+                success: false,
+                message: err.message
+            }
+            res.status(400).json(body);
+        }
+    }
+
     async createMovie(req, res) {
-        const { name,
+        const { 
+            title,
             description,
             releaseDate,
             duration,
@@ -86,7 +125,7 @@ class AdminController {
         try {
             // create and save a new movie
             const movie = await Movie.create({
-                name,
+                title,
                 description,
                 releaseDate,
                 duration,
@@ -116,7 +155,7 @@ class AdminController {
         const body = req.body;
         const id = req.params.id;
 
-        const movie = Movie.findById(id);
+        const movie = await Movie.findById(id);
 
         if (!movie) {
             const body = {
@@ -148,6 +187,24 @@ class AdminController {
 
     }
 
+    async deleteMovie(req, res) {
+        const id = req.params.id;
+
+        try {
+            await Movie.findByIdAndDelete(id);
+            const body = {
+                success: true,
+                message: "Delete movie successfully"
+            }
+            res.status(200).json(body);
+        } catch (err) {
+            const body = {
+                success: false,
+                message: err.message
+            }
+            res.status(400).json(body);
+        }
+    }
     async createFood(req, res) {
         const {
             name,
@@ -189,7 +246,7 @@ class AdminController {
         const body = req.body;
         const id = req.params.id;
 
-        const food = Food.findById(id);
+        const food = await Food.findById(id);
 
         if (!food) {
             const body = {
@@ -223,6 +280,24 @@ class AdminController {
             res.status(400).json(body);
         }
 
+    }
+
+    async deleteFood(req, res) {
+        const id = req.params.id;
+        try {
+            await Food.findByIdAndDelete(id);
+            const body = {
+                success: true,
+                message: "Delete food successfully"
+            }
+            res.status(200).json(body);
+        } catch (err) {
+            const body = {
+                success: false,
+                message: err.message
+            }
+            res.status(400).json(body);
+        } 
     }
     async createDrink(req, res) {
         const {
@@ -265,7 +340,7 @@ class AdminController {
         const body = req.body;
         const id = req.params.id;
 
-        const drink = Drink.findById(id);
+        const drink = await Drink.findById(id);
 
         if (!Drink) {
             const body = {
@@ -301,6 +376,24 @@ class AdminController {
 
     }
 
+    async deleteDrink(req, res) {
+        const id = req.params.id;
+        try {
+            await Drink.findByIdAndDelete(id);
+            const body = {
+                success: true,
+                message: "Delete drink successfully"
+            }
+            res.status(200).json(body);
+        } catch (err) {
+            const body = {
+                success: false,
+                message: err.message
+            }
+            res.status(400).json(body);
+        }
+        
+    }
     async createStaff(req, res) {
         const {
             firstname,

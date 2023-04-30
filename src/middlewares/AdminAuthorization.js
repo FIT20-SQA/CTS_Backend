@@ -1,10 +1,9 @@
-import jwtVerifier from '../utils/JwtVerifier.js'
+import { parseToken } from '../utils/JwtVerifier.js'
 
 
-const AdminAuthorization = (req,res,next) => {
+const AdminAuthorization = async (req,res,next) => {
     const token = req.cookies.token
-    const { id, role } = jwtVerifier.parse(token);
-
+    const {id, role} = parseToken(token);
     if (role === "ADMIN") {
         next();
     } else {

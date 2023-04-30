@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
-import showtimeSpot from "../enum/ShowtimeSpot";
+import showtimeSpot from "../enum/ShowtimeSpot.js";
+import Ticket from './Ticket.js'
+
 const Schema = mongoose.Schema;
 
 const movieScreenTime = new Schema({
@@ -25,4 +27,13 @@ const movieScreenTime = new Schema({
     showtimeDate: { type: Date, required: true }
 })
 
+movieScreenTime.pre('deleteOne', async function (next) {
+    try {
+        // remove all the tickets associated with the movieScreenTime
+        await Ticket.deleteMany({ movieScreenTimeId: this._id })
+        next()
+    } catch (error) {
+        next(error)
+    }
+})
 export default mongoose.model('MovieScreenTime', movieScreenTime)
