@@ -1,0 +1,8 @@
+export default Object.freeze({
+    TEN_TWELVE: "10-12",
+    TWELVE_FOURTEEN: "12-14",
+    FOURTEEN_SIXTEEN: "14-16",
+    SIXTEEN_EIGHTEEN: "16-18",
+    EIGHTEEN_TWENTY: "18-20",
+    TWENTY_TWENTY_TWO: "20-22"
+});
