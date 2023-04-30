@@ -13,4 +13,4 @@ const movieSchema = new Schema({
     poster: { type: String, required: true }
 });
 
-export default mongoose.model('Movie', movie);
+export default mongoose.model('Movie', movieSchema);

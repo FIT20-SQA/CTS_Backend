@@ -9,24 +9,18 @@ router.post('/theater-rooms', AdminAuthorization, AdminController.createTheaterR
 router.post('/foods', AdminAuthorization, AdminController.createFood)
 router.post('/drinks', AdminAuthorization, AdminController.createDrink)
 router.post('/staffs', AdminAuthorization, AdminController.createStaff)
+router.put('/foods/:id', AdminAuthorization, AdminController.updateFood)
+router.put('/drinks/:id', AdminAuthorization, AdminController.updateDrink)
+router.put('/movies/:id', AdminAuthorization, AdminController.updateMovie)
+router.put('/theater-rooms/:id', AdminAuthorization, AdminController.updateTheaterRoom)
 
 // //TODO: schedule showtime for a movie
 // router.post('/showtimes', AdminAuthorization, AdminController.createShowtime)
 
-// //TODO: update food 
-// router.put('/foods/:id', AdminAuthorization, AdminController.updateFood)
 
-// //TODO: update drink 
-// router.put('/drinks/:id', AdminAuthorization, AdminController.updateDrink)
-
-// //TODO: update staff
+// //TODO: update staff (lock account)
 // router.put('/staffs/:id', AdminAuthorization, AdminController.updateStaff)
 
-// //TODO: update movie
-// router.put('/movies/:id', AdminAuthorization, AdminController.updateMovie)
-
-// //TODO: update theater room
-// router.put('/theater-rooms/:id', AdminAuthorization, AdminController.updateTheaterRoom)
 
 
 export default router

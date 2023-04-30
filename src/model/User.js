@@ -8,7 +8,7 @@ const Schema = mongoose.Schema;
 const User = new Schema({
     firstname : {
         type :String,
-        require : [true],
+        required:true,
         unique : false,
         maxLength: 255,
         minLength: 2
@@ -16,24 +16,26 @@ const User = new Schema({
 
     lastname : {
         type :String,
-        require : [true],
+        required : [true],
         unique : false,
         maxLength: 255,
         minLength: 2 
     },
-
+    email : {
+        type :String,
+        required: true,
+        unique : true
+    },
     password: {
         type: String, 
-        require: [true,"Enter password"],
+        required: [true,"Enter password"],
         maxLength: [255, "max 255 character long"],
         minLength: [5, "minium 5 character long"]
         
     },
     role : { 
-        // type: ROLE,
         type: String,
         require: true,
-        // ref: ROLE,
         default: "STAFF",
         enum: ['ADMIN', "STAFF"]
     }

@@ -4,27 +4,10 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 const theaterRoom = new Schema({
-    name : {
-        type :String,
-        require : [true],
-        unique : false,
-        maxLength: 255,
-        minLength: 2
-    },
-    rows : {
-        type :Number,
-        require : [true],
-        unique : false,
-        maxLength: 255,
-        minLength: 2
-    },
-    seatsPerRow : {
-        type :Number,
-        require : [true],
-        unique : false,
-        maxLength: 255,
-        minLength: 2
-    },
+    name : {type :String, required : true},
+    rowNum : {type :Number, required : true},
+    seatsPerRow : { type : Number, required : true},
+    image: { type: String, required: true }
 });
 
 
