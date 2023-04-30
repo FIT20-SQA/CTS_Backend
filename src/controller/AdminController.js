@@ -3,8 +3,8 @@ import Movie from '../model/Movie.js';
 import Food from '../model/Food.js';
 import Drink from '../model/Drink.js';
 import User from '../model/User.js';
-
-
+import MovieShowtime from '../model/MovieShowtime.js';
+import Ticket from '../model/Ticket.js';
 
 class AdminController {
     async createTheaterRoom(req, res) {
@@ -392,7 +392,7 @@ class AdminController {
             }
             res.status(400).json(body);
         }
-        
+
     }
     async createStaff(req, res) {
         const {
@@ -426,6 +426,56 @@ class AdminController {
         }
     }
 
+    async sheduleShowtime(req, res) {
+        const { movieId, theaterRoomId, showtimeDate, showtimeSpot } = req.body 
+
+        try {
+            const movieShowTime = new MovieShowtime();
+            movieShowTime.movieId = movieId;
+            movieShowTime.theaterRoomId = theaterRoomId;
+            movieShowTime.showtimeDate = showtimeDate;
+            movieShowTime.showtimeSpot = showtimeSpot;
+
+            const theaterRoom = await TheaterRoom.findById(theaterRoomId);
+            if (!theaterRoom) {
+                const body = {
+                    success: false,
+                    message: "Theater room not found"
+                }
+                res.status(404).json(body);
+            }
+
+            const tickets = [];
+            for (let i = 0; i < theaterRoom.rowNum; i++) {
+                for (let j = 0; j < theaterRoom.seatsPerRow; j++) {
+                    const ticket = new Ticket();
+                    ticket.row = i;
+                    ticket.column = j;
+                    ticket.status = "available";
+                    ticket.price = 10;
+                    ticket.movieShowtime = movieShowTime
+                    tickets.push(ticket);
+                }
+            }
+
+            movieShowTime.tickets = tickets;
+
+            await movieShowTime.save();
+            await Ticket.insertMany(tickets);
+            const body = {
+                success: true,
+                message: "Create movie showtime successfully"
+            }
+
+            res.status(200).json(body);
+        } catch (err) {
+            const body = {
+                success: false,
+                message: err.message
+            }
+            res.status(400).json(body);
+        }
+    }
     
 }
 

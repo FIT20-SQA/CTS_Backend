@@ -3,9 +3,9 @@ import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 const Ticket = new Schema({
-    movieScreenTimeId: {
+    movieShowtime: {
         type: Schema.Types.ObjectId,
-        ref: 'MovieScreenTime',
+        ref: 'MovieShowtime',
         required: true
     },
     seatCode: { type: String },

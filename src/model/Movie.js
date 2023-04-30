@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import MovieScreenTime from './MovieScreenTime.js';
+import MovieScreenTime from './MovieShowtime.js';
 
 
 const Schema = mongoose.Schema;

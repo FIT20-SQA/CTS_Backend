@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import MovieScreenTime from './MovieScreenTime.js';
+import MovieScreenTime from './MovieShowtime.js';
 
 const Schema = mongoose.Schema;
 
@@ -19,4 +19,4 @@ theaterRoom.pre('deleteOne', async function (next) {
         next(error)
     }
 })
-export default mongoose.model('TheaterRoom', theaterRoom);
+export default mongoose.model('TheaterRoom', theaterRoom, "theater_rooms");

@@ -26,8 +26,8 @@ router.post('/staffs', AdminAuthorization, AdminController.createStaff)
 
 //TODO: 
 
-// //TODO: schedule showtime for a movie
-// router.post('/showtimes', AdminAuthorization, AdminController.createShowtime)
+//TODO: schedule showtime for a movie
+router.post('/showtimes', AdminAuthorization, AdminController.sheduleShowtime)
 
 
 // //TODO: update staff (lock account)

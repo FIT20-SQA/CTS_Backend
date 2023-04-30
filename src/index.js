@@ -13,7 +13,7 @@ app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 app.use(cors());
 
-
+//TODO: catch all the error to return the response object
 
 app.use(morgan('combined'));
 app.use(cookie());
