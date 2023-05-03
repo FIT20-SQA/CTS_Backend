@@ -5,12 +5,12 @@ import Ticket from './Ticket.js'
 const Schema = mongoose.Schema;
 
 const MovieShowtime = new Schema({
-    movieId: {
+    movie: {
         type: Schema.Types.ObjectId,
         ref: 'Movie',
         required: true
     },
-    theaterRoomId: {
+    theaterRoom: {
         type: Schema.Types.ObjectId,
         ref: 'TheaterRoom',
         required: true

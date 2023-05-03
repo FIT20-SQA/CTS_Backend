@@ -24,9 +24,10 @@ router.delete('/drinks/:id', AdminAuthorization, AdminController.deleteDrink)
 router.post('/staffs', AdminAuthorization, AdminController.createStaff)
 
 
+router.get("/showtimes", AdminAuthorization, AdminController.getShowtimeByTheaterRoomId)
+
 //TODO: 
 
-//TODO: schedule showtime for a movie
 router.post('/showtimes', AdminAuthorization, AdminController.sheduleShowtime)
 
 

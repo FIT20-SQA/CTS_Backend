@@ -5,7 +5,7 @@ import Drink from '../model/Drink.js';
 import User from '../model/User.js';
 import MovieShowtime from '../model/MovieShowtime.js';
 import Ticket from '../model/Ticket.js';
-
+import ShowtimeSpot from '../enum/ShowtimeSpot.js';
 class AdminController {
     async createTheaterRoom(req, res) {
         const { name, rowNum, seatsPerRow } = req.body;
@@ -430,12 +430,17 @@ class AdminController {
         const { movieId, theaterRoomId, showtimeDate, showtimeSpot } = req.body 
 
         try {
-            const movieShowTime = new MovieShowtime();
-            movieShowTime.movieId = movieId;
-            movieShowTime.theaterRoomId = theaterRoomId;
-            movieShowTime.showtimeDate = showtimeDate;
-            movieShowTime.showtimeSpot = showtimeSpot;
-
+            // check if movie exists
+            const movie = await Movie.findById(movieId);
+            if (!movie) {
+                const body = {
+                    success: false,
+                    message: "Movie not found"
+                }
+                res.status(404).json(body);
+                return
+            }
+            // check if theater room exists
             const theaterRoom = await TheaterRoom.findById(theaterRoomId);
             if (!theaterRoom) {
                 const body = {
@@ -443,6 +448,24 @@ class AdminController {
                     message: "Theater room not found"
                 }
                 res.status(404).json(body);
+                return
+            }
+            const movieShowTime = new MovieShowtime();
+            movieShowTime.movie = movie;
+            movieShowTime.theaterRoom = theaterRoom;
+            movieShowTime.showtimeDate = showtimeDate;
+            movieShowTime.showtimeSpot = showtimeSpot;
+
+            
+            // check if the theater room is available at the spot and date
+            const showtime = await MovieShowtime.find({ theaterRoomId: theaterRoomId, showtimeDate: showtimeDate, showtimeSpot: showtimeSpot });
+            if (showtime.length > 0) {
+                const body = {
+                    success: false,
+                    message: "Theater room is not available at the spot and date"
+                }
+                res.status(404).json(body);
+                return
             }
 
             const tickets = [];
@@ -451,7 +474,7 @@ class AdminController {
                     const ticket = new Ticket();
                     ticket.row = i;
                     ticket.column = j;
-                    ticket.status = "available";
+                    ticket.available = true;
                     ticket.price = 10;
                     ticket.movieShowtime = movieShowTime
                     tickets.push(ticket);
@@ -465,6 +488,39 @@ class AdminController {
             const body = {
                 success: true,
                 message: "Create movie showtime successfully"
+            }
+
+            res.status(200).json(body);
+        } catch (err) {
+            const body = {
+                success: false,
+                message: err.message
+            }
+            res.status(400).json(body);
+        }
+    }
+
+    async getShowtimeByTheaterRoomId(req, res) {
+        const { theaterRoomId, date } = req.body;
+
+        try {
+            
+            const showtimesAtDateByTheaterRoom = await MovieShowtime
+                .find({ theaterRoomId, showtimeDate: date })
+                .select("-tickets")
+                .populate("movie theaterRoom");
+
+            const showtimeBySpot = {};
+            for (let i = 0; i < ShowtimeSpot.length; i++) {
+                const spot = ShowtimeSpot[i];
+                let showtime = showtimesAtDateByTheaterRoom.filter(showtime => showtime.showtimeSpot === spot).pop(); // can only have one showtime at a spot at a date of a theater room
+                showtimeBySpot[spot] = showtime;
+            }
+
+            const body = {
+                success: true,
+                message: "Get movie showtime successfully",
+                data: showtimeBySpot
             }
 
             res.status(200).json(body);

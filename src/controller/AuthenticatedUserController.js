@@ -1,7 +1,7 @@
 import Movie from '../model/Movie.js';
 import Food from '../model/Food.js';
 import Drink from '../model/Drink.js';
-
+import ShowtimeSpot from '../enum/ShowtimeSpot.js';
 
 class AuthenticatedUserController {
     // get the movies
@@ -69,6 +69,39 @@ class AuthenticatedUserController {
                 message: err.message
             }
 
+            res.status(400).json(body)
+        }
+    }
+
+    // get all showtimes on a specific date
+    async getShowtimes(req, res) {
+        const { date } = req.body 
+        try {
+            const allShowtimesAtDate = await MovieShowtime.find({ showtimeDate: date }).select('-tickets')
+            
+            const showtimeBySpot = {}
+
+            // group the showtimes by showtimeSpot
+            for (let i = 0; i < showtimeBySpot.length; i++) {
+                const spot = showtimes[i]
+                const showtimes = allShowtimesAtDate.filter(showtime => showtime.showtimeSpot === spot)
+                showtimeBySpot[spot] = showtimes
+            }
+
+            const body = {
+                success: true,
+                message: "Get showtimes successfully",
+                data: showtimeBySpot
+            }
+
+            res.status(200).json(body)
+
+
+        } catch (err) {
+            const body = {
+                success: false,
+                message: err.message
+            }
             res.status(400).json(body)
         }
     }
