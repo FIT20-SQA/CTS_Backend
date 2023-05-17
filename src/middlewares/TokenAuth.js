@@ -4,7 +4,16 @@ const cookies = require('cookie-parser');
 
 
 const TokenAuth = (req,res,next) => {
-    const token = req.cookies.token;
+    const authorizationHeader = req.headers.authorization;
+
+    if (!authorizationHeader || !authorizationHeader.startsWith('Bearer ')) {
+        return res.status(401).json({
+            success: false,
+            message: 'Bearer token missing or invalid',
+        });
+    }
+
+    const token = authorizationHeader.split(' ')[1];
     if (token) {
         jwt.verify(token, 'secret_key', async(err,token) => {
             if (err) {

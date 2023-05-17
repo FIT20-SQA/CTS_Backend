@@ -2,6 +2,8 @@ import Movie from '../model/Movie.js';
 import Food from '../model/Food.js';
 import Drink from '../model/Drink.js';
 import ShowtimeSpot from '../enum/ShowtimeSpot.js';
+import { parseToken } from '../utils/JwtVerifier.js';
+import User from '../model/User.js';
 
 class AuthenticatedUserController {
     // get the movies
@@ -105,6 +107,38 @@ class AuthenticatedUserController {
             res.status(400).json(body)
         }
     }
+
+
+    async getUserInfo(req, res) {
+        const authorizationHeader = req.headers.authorization;
+
+        if (!authorizationHeader || !authorizationHeader.startsWith('Bearer ')) {
+            return res.status(401).json({
+                success: false,
+                message: 'Bearer token missing or invalid',
+            });
+        }
+
+        const token = authorizationHeader.split(' ')[1];
+        const { id, role } = parseToken(token)
+        const user = await User.findById(id)
+
+        const body = {
+            success: true,
+            message: "Get user info successfully",
+            data: {
+                id: user._id,
+                firstName: user.firstname,
+                lastName: user.lastname,
+                email: user.email,
+                role: user.role,
+                avatar: user.avatar
+            }
+
+        }
+        res.status(200).json(body)
+    }
+    
 }
 
 

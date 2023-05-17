@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
 import User from '../model/User.js';
+import { parseToken } from '../utils/JwtVerifier.js';
 
 const createToken = (payload) => {
     console.log('payload');
@@ -41,11 +42,10 @@ class AuthController {
 
     async login(req, res) {
         // res.status(201).json(34354);
-        const { username, password } = req.body;
-        console.log(username, password);
+        const { email, password } = req.body;
         try {
             res.clearCookie("token");
-            const user = await User.login(username, password);
+            const user = await User.login(email, password);
             const payload = {
                 id: user._id,
                 role: user.role
@@ -109,6 +109,8 @@ class AuthController {
             token: cookie.token,
         });
     }
+
+   
 }
 
 export default new AuthController();

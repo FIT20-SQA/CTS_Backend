@@ -8,8 +8,8 @@ const movieSchema = new Schema({
     description: { type: String },
     releaseDate: { type: Date, required: true },
     duration: { type: Number, required: true },
-    genre: { type: String, required: true },
-    director: { type: String },
+    genre: { type: [String], required: true },
+    director: { type: [String] },
     cast: { type: [String] },
     poster: { type: String }
 });
@@ -24,4 +24,5 @@ movieSchema.pre('deleteOne', async function(next) {
         next(error)
     }
 })
+
 export default mongoose.model('Movie', movieSchema);
