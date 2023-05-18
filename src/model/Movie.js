@@ -3,14 +3,16 @@ import MovieScreenTime from './MovieShowtime.js';
 
 
 const Schema = mongoose.Schema;
+
 const movieSchema = new Schema({
     title: { type: String, required: true },
     description: { type: String },
     releaseDate: { type: Date, required: true },
     duration: { type: Number, required: true },
     genre: { type: [String], required: true },
-    director: { type: [String] },
-    cast: { type: [String] },
+    country: { type: String},
+    directors: { type: [String] },
+    actors: { type: [String] },
     poster: { type: String }
 });
 

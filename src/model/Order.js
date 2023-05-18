@@ -25,10 +25,10 @@ const orderSchema = new Schema({
             default: 0
         },
     },
-    ticket: {
+    ticket: [{
         type: Schema.Types.ObjectId,
         ref: 'Ticket',
-    },
+    }],
     totalPrice: {
         type: Number,
         required: true,

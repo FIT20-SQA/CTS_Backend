@@ -18,12 +18,16 @@ const MovieShowtime = new Schema({
     showtimeSpot: {
         type: String,
         required: true,
-        enum: ['10-12', '12-14', '14-16', '16-18', '18-20', '20-22'] // for example, 10-12 means the showtime is from 10am to 12pm
+        enum: ['10-12', '12-14', '14-16', '16-18', '18-20', '20-22'] 
+        // for example, 10-12 means the showtime is from 10am to 12pm
     },
     tickets: [{
         type: Schema.Types.ObjectId,
         ref: 'Ticket'
     }],
+    priceRates: {
+        type: [Object]
+    },
     showtimeDate: { type: Date, required: true }
 })
 

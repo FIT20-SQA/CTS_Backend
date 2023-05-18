@@ -8,15 +8,11 @@ import Ticket from '../model/Ticket.js';
 import ShowtimeSpot from '../enum/ShowtimeSpot.js';
 class AdminController {
     async createTheaterRoom(req, res) {
-        const { name, rowNum, seatsPerRow } = req.body;
+        const requestBody = req.body;
 
         try {
             // create and save a new theater room
-            const theaterRoom = await TheaterRoom.create({
-                name,
-                rowNum,
-                seatsPerRow
-            });
+            const theaterRoom = await TheaterRoom.create(requestBody);
 
             const body = {
                 success: true,
@@ -53,7 +49,7 @@ class AdminController {
     async updateTheaterRoom(req, res) {
         const body = req.body;
         const id = req.params.id;
-        
+
         const theaterRoom = await TheaterRoom.findById(id);
 
         if (!theaterRoom) {
@@ -63,7 +59,7 @@ class AdminController {
             }
             res.status(404).json(body);
         }
-        
+
         if (body.name) theaterRoom.name = body.name
         if (body.rowNum) theaterRoom.rows = body.rows
         if (body.setPerRows) theaterRoom.setPerRows = body.setPerRows
@@ -86,7 +82,7 @@ class AdminController {
             }
             res.status(400).json(body);
         }
-        
+
     }
 
     async deleteTheaterRoom(req, res) {
@@ -111,14 +107,15 @@ class AdminController {
     }
 
     async createMovie(req, res) {
-        const { 
+        const {
             title,
             description,
             releaseDate,
             duration,
             genre,
-            director,
-            cast,
+            country,
+            directors,
+            actors,
             poster,
         } = req.body;
 
@@ -130,8 +127,9 @@ class AdminController {
                 releaseDate,
                 duration,
                 genre,
-                director,
-                cast,
+                country,
+                directors,
+                actors,
                 poster,
             });
 
@@ -164,7 +162,7 @@ class AdminController {
             }
             res.status(404).json(body);
         }
-        
+
         if (body.name) movie.name = body.name;
         if (body.description) movie.description = body.description;
         if (body.releaseDate) movie.releaseDate = body.releaseDate;
@@ -210,9 +208,7 @@ class AdminController {
             name,
             price,
             description,
-            category,
-            inStock,
-            image,
+            image
         } = req.body;
 
         try {
@@ -221,8 +217,6 @@ class AdminController {
                 name,
                 price,
                 description,
-                category,
-                inStock,
                 image,
 
             });
@@ -259,9 +253,7 @@ class AdminController {
         if (body.name) food.name = body.name;
         if (body.price) food.price = body.price;
         if (body.description) food.description = body.description;
-        if (body.category) food.category = body.category;
-        if (body.inStock) food.inStock = body.inStock;
-        if (body.image) food.image = body.image; 
+        if (body.image) food.image = body.image;
 
         try {
             // update the food
@@ -297,15 +289,13 @@ class AdminController {
                 message: err.message
             }
             res.status(400).json(body);
-        } 
+        }
     }
     async createDrink(req, res) {
         const {
             name,
             price,
             description,
-            category,
-            inStock,
             image,
         } = req.body;
 
@@ -315,15 +305,12 @@ class AdminController {
                 name,
                 price,
                 description,
-                category,
-                inStock,
-                image,
-
+                image
             });
 
             const body = {
                 success: true,
-                message: "Create food successfully"
+                message: "Create rink successfully"
             }
 
             res.status(200).json(body);
@@ -355,7 +342,7 @@ class AdminController {
         if (body.description) drink.description = body.description;
         if (body.category) drink.category = body.category;
         if (body.inStock) drink.inStock = body.inStock;
-        if (body.image) drink.image = body.image; 
+        if (body.image) drink.image = body.image;
 
         try {
             // update the food
@@ -426,8 +413,32 @@ class AdminController {
         }
     }
 
+    async getStaffs(req, res) {
+
+
+        try {
+            // create and save a new staff
+            const staffs = await User.find({ role: "STAFF" }).select("-password")
+
+            const body = {
+                success: true,
+                message: "Get staffs successfully",
+                data: staffs
+            }
+
+            res.status(200).json(body);
+        } catch (err) {
+            const body = {
+                success: false,
+                message: err.message
+            }
+            res.status(400).json(body);
+        }
+    }
+
     async sheduleShowtime(req, res) {
-        const { movieId, theaterRoomId, showtimeDate, showtimeSpot } = req.body 
+        const { movieId, theaterRoomId, showtimeDate, showtimeSpot, priceRates } = req.body
+        console.log(req.body);
 
         try {
             // check if movie exists
@@ -456,10 +467,11 @@ class AdminController {
             movieShowTime.showtimeDate = showtimeDate;
             movieShowTime.showtimeSpot = showtimeSpot;
 
-            
+
             // check if the theater room is available at the spot and date
-            const showtime = await MovieShowtime.find({ theaterRoomId: theaterRoomId, showtimeDate: showtimeDate, showtimeSpot: showtimeSpot });
-            if (showtime.length > 0) {
+            const existedShowtimes = await MovieShowtime.find({ theaterRoom: theaterRoomId, showtimeDate: new Date(showtimeDate), showtimeSpot: showtimeSpot });
+            
+            if (existedShowtimes.length > 0) {
                 const body = {
                     success: false,
                     message: "Theater room is not available at the spot and date"
@@ -469,14 +481,24 @@ class AdminController {
             }
 
             const tickets = [];
+            const rowPrice = []
+            for (let i = 0; i < priceRates.length; i++) {
+                const priceRate = priceRates[i];
+                const { fromRow, toRow, price } = priceRate
+
+                for (let j = fromRow; j <= toRow; j++) {
+                    rowPrice[j - 1] = price; // index starts from 0, but first row is 1
+                }
+            }
+            
             for (let i = 0; i < theaterRoom.rowNum; i++) {
-                for (let j = 0; j < theaterRoom.seatsPerRow; j++) {
+                for (let j = 0; j < theaterRoom.seatNumPerRow; j++) {
                     const ticket = new Ticket();
                     ticket.row = i;
                     ticket.column = j;
                     ticket.available = true;
-                    ticket.price = 10;
-                    ticket.movieShowtime = movieShowTime
+                    ticket.price = rowPrice[i];
+                    ticket.movieShowtime = movieShowTime;
                     tickets.push(ticket);
                 }
             }
@@ -500,11 +522,12 @@ class AdminController {
         }
     }
 
+
     async getShowtimeByTheaterRoomId(req, res) {
         const { theaterRoomId, date } = req.body;
 
         try {
-            
+
             const showtimesAtDateByTheaterRoom = await MovieShowtime
                 .find({ theaterRoomId, showtimeDate: date })
                 .select("-tickets")
@@ -532,7 +555,51 @@ class AdminController {
             res.status(400).json(body);
         }
     }
-    
+
+    async getTheaterRoomsForSchedulingMovie(req, res) {
+        const { showtimeDate, showtimeSpot } = req.body
+        console.log('i got this one: ');
+        console.log(req.body);
+
+        const availableRooms = await TheaterRoom.aggregate([
+            {
+                $lookup: {
+                    from: "movie_showtimes",
+                    let: { theaterRoomId: "$_id" },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        { $eq: ["$theaterRoom", "$$theaterRoomId"] },
+                                        { $eq: ["$showtimeDate", new Date(showtimeDate)] },
+                                        { $eq: ["$showtimeSpot", showtimeSpot] }
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    as: "showtimeRecords"
+                }
+            },
+            {
+                $match: {
+                    showtimeRecords: { $size: 0 }
+                }
+            }
+        ]);
+
+        availableRooms.forEach(room => delete room.showtimeRecords)
+        const body = {
+            success: true,
+            message: "Get avaiable theater rooms successfully",
+            data: availableRooms
+
+        }
+
+        res.status(200).json(body);
+
+    }
 }
 
 export default new AdminController();

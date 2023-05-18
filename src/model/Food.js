@@ -8,8 +8,6 @@ const Food = new Schema({
     price: { type: Number, required: true },
     description: { type: String },
     image: { type: String },
-    category: { type: String },
-    inStock: { type: Number, required: true }
 })
 
 export default mongoose.model('Food', Food)

@@ -11,8 +11,8 @@ import StaffAuthorization from '../middlewares/StaffAuthorization.js';
 // router.get('/orders/:id', StaffAuthorization, StaffController.getOrderDetail);
 // // TODO: create an order 
 
-// router.post('/orders', StaffAuthorization, StaffController.createOrder);
-// // TODO: create an order 
+router.post('/orders', StaffAuthorization, StaffController.createOrder);
+// TODO: create an order 
 
 // router.put('/orders/:id', StaffAuthorization, StaffController.updateOrder);
 

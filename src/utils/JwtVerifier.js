@@ -8,20 +8,25 @@ const parseToken = (jwtToken) => {
             role: null
         }
     }
-
-    const token =  jwt.verify(jwtToken, 'secret_key')
-    if (!token) {
+    try {
+        const token = jwt.verify(jwtToken, 'secret_key')
+        if (!token) {
+            return {
+                id: null,
+                role: null
+            }
+        } else {
+            return {
+                id: token.id,
+                role: token.role
+            }
+        }
+    } catch (err) {
         return {
             id: null,
             role: null
         }
     }
-
-    return {
-        id: token.id,
-        role: token.role
-    }
-
 }
 
 export { parseToken };

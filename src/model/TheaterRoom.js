@@ -6,7 +6,7 @@ const Schema = mongoose.Schema;
 const theaterRoom = new Schema({
     name: { type: String, required: true },
     rowNum: { type: Number, required: true },
-    seatsPerRow: { type: Number, required: true },
+    seatNumPerRow: { type: Number, required: true },
     image: { type: String }
 });
 

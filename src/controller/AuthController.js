@@ -1,12 +1,10 @@
 import jwt from "jsonwebtoken";
-import cookieParser from "cookie-parser";
 import User from '../model/User.js';
-import { parseToken } from '../utils/JwtVerifier.js';
 
 const createToken = (payload) => {
     console.log('payload');
     console.log(payload);
-    return jwt.sign(payload, "secret_key", { expiresIn: 5000 });
+    return jwt.sign(payload, "secret_key", { expiresIn: '30d' });
 };
 
 const maxAge = 2 * 24 * 60 * 60;
@@ -15,6 +13,10 @@ class AuthController {
     async register(req, res, next) {
         let data = req.body;
         try {
+            const existedUser = await User.findOne({ email: data.email });
+            if (existedUser) {
+                throw new Error("Email already exists");
+            }
 
             const user = await User.create(data);
             const payload = {
@@ -35,7 +37,7 @@ class AuthController {
                 message: err.message,
             }
 
-            res.status(404).json(body);
+            res.status(400).json(body);
             next();
         }
     }
@@ -110,7 +112,7 @@ class AuthController {
         });
     }
 
-   
+
 }
 
 export default new AuthController();
