@@ -11,12 +11,9 @@ router.put('/theater-rooms/:id', AdminAuthorization, AdminController.updateTheat
 router.delete('/theater-rooms/:id', AdminAuthorization, AdminController.deleteTheaterRoom)
 router.post('/theater-rooms-by-showtime', AdminAuthorization, AdminController.sheduleShowtime)
 
-
-
 router.post('/movies', AdminAuthorization, AdminController.createMovie)
 router.put('/movies/:id', AdminAuthorization, AdminController.updateMovie)
 router.delete('/movies/:id', AdminAuthorization, AdminController.deleteMovie)
-
 
 router.post('/foods', AdminAuthorization, AdminController.createFood)
 router.put('/foods/:id', AdminAuthorization, AdminController.updateFood)
@@ -28,7 +25,6 @@ router.delete('/drinks/:id', AdminAuthorization, AdminController.deleteDrink)
 
 router.post('/staffs', AdminAuthorization, AdminController.createStaff)
 router.get('/staffs', AdminAuthorization, AdminController.getStaffs)
-
 
 router.get("/showtimes", AdminAuthorization, AdminController.getShowtimeByTheaterRoomId)
 
