@@ -6,6 +6,7 @@ import User from '../model/User.js';
 import MovieShowtime from '../model/MovieShowtime.js';
 import Ticket from '../model/Ticket.js';
 import ShowtimeSpot from '../enum/ShowtimeSpot.js';
+
 class AdminController {
     async createTheaterRoom(req, res) {
         const requestBody = req.body;
